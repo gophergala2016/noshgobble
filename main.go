@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
 	"html/template"
 	"net/http"
@@ -16,6 +17,23 @@ func tp(name string) string {
 
 var templates = template.Must(template.ParseFiles(tp("root")))
 
+type Data struct {
+	Ingredients string
+}
+
+func processHandler(w http.ResponseWriter, r *http.Request) {
+	data := Data{Ingredients: r.FormValue("ingredients")}
+
+	js, err := json.Marshal(data)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(js)
+}
+
 func rootHandler(w http.ResponseWriter, r *http.Request) {
 	err := templates.ExecuteTemplate(w, "root.html", nil)
 	if err != nil {
@@ -29,6 +47,7 @@ func main() {
 		loadData()
 	}
 
+	http.HandleFunc("/process", processHandler)
 	http.HandleFunc("/", rootHandler)
 	http.ListenAndServe(":8080", nil)
 }
