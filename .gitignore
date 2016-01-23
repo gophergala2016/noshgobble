@@ -8,3 +8,4 @@ build/reports
 data/*.pdf
 sqlite3.db
 noshgobble
+backups
