@@ -81,7 +81,7 @@ func checkErr(err error) {
 }
 
 func loadFoods(db *sql.DB) {
-	sql, err := ioutil.ReadFile("./sql/create-food-table.sql")
+	sql, err := ioutil.ReadFile("./sql/create-foods-table.sql")
 	checkErr(err)
 	_, err = db.Exec(string(sql))
 	checkErr(err)
@@ -103,6 +103,60 @@ func loadFoods(db *sql.DB) {
 
 		// insert
 		_, err = stmt.Exec(l[0], l[1], l[2], l[3], l[4], l[5], l[7], l[8], l[9], l[10], l[11], l[12], l[13])
+		checkErr(err)
+	}
+}
+
+func loadNutrients(db *sql.DB) {
+	sql, err := ioutil.ReadFile("./sql/create-nutrients-table.sql")
+	checkErr(err)
+	_, err = db.Exec(string(sql))
+	checkErr(err)
+
+	// prepare the insert statement
+	stmt, err := db.Prepare("INSERT INTO nutrients(id, units, tagname, description, precision, common_order) values(?,?,?,?,?,?)")
+	checkErr(err)
+
+	f, err := os.Open("./data/NUTR_DEF.txt")
+	checkErr(err)
+	csvReader := csv.NewReader(newQuoteFixReader(f))
+	csvReader.Comma = '^'
+	for {
+		l, err := csvReader.Read()
+		if err == io.EOF {
+			break
+		}
+		checkErr(err)
+
+		// insert
+		_, err = stmt.Exec(l[0], l[1], l[2], l[3], l[4], l[5])
+		checkErr(err)
+	}
+}
+
+func loadQuantities(db *sql.DB) {
+	sql, err := ioutil.ReadFile("./sql/create-quantities-table.sql")
+	checkErr(err)
+	_, err = db.Exec(string(sql))
+	checkErr(err)
+
+	// prepare the insert statement
+	stmt, err := db.Prepare("INSERT INTO quantities(food_id, nutrient_id, quantity) values(?,?,?)")
+	checkErr(err)
+
+	f, err := os.Open("./data/NUT_DATA.txt")
+	checkErr(err)
+	csvReader := csv.NewReader(newQuoteFixReader(f))
+	csvReader.Comma = '^'
+	for {
+		l, err := csvReader.Read()
+		if err == io.EOF {
+			break
+		}
+		checkErr(err)
+
+		// insert
+		_, err = stmt.Exec(l[0], l[1], l[2])
 		checkErr(err)
 	}
 }
@@ -145,6 +199,8 @@ func loadData() {
 
 	// open database for writing
 	loadFoods(db)
+	loadNutrients(db)
+	loadQuantities(db)
 }
 
 func main() {
