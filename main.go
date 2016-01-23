@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bytes"
 	"database/sql"
 	"encoding/csv"
 	"flag"
@@ -25,7 +24,7 @@ type quoteFixReader struct {
 func newQuoteFixReader(r *os.File) (qfr *quoteFixReader) {
 	qfr = new(quoteFixReader)
 	qfr.r = r
-	qfr.buffer = make([]byte, 1024)
+	qfr.buffer = make([]byte, 1000)
 	qfr.index = 0
 	qfr.capacity = 0
 	qfr.done = false
@@ -36,6 +35,7 @@ func (r *quoteFixReader) Read(b []byte) (n int, err error) {
 	i := 0
 	for ; i < len(b); i++ {
 		if r.index == r.capacity {
+			r.index = 0
 			if r.done {
 				return 0, io.EOF
 			} else {
@@ -50,8 +50,7 @@ func (r *quoteFixReader) Read(b []byte) (n int, err error) {
 				} else {
 					checkErr(err)
 				}
-				r.buffer = bytes.ToLower(r.buffer)
-				r.index = 0
+				//r.buffer = bytes.ToLower(r.buffer)
 			}
 		}
 		c := r.buffer[r.index]
