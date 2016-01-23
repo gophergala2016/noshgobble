@@ -1,5 +1,5 @@
-CREATE TABLE `food` (
-    `id` INTEGER PRIMARY KEY AUTOINCREMENT,
+CREATE TABLE `foods` (
+    `id` INTEGER PRIMARY KEY,
     `food_group_id` INTEGER,
     `description` VARCHAR(200) NULL,
     `short_description` VARCHAR(60) NULL,
@@ -7,7 +7,7 @@ CREATE TABLE `food` (
     `manufacturer_name` VARCHAR(65) NULL,
     `refuse_description` VARCHAR(135) NULL,
     `refuse` INTEGER NULL,
-    `scientif_name` VARCHAR(65) NULL,
+    `scientific_name` VARCHAR(65) NULL,
     `nitrogen_factor` REAL NULL,
     `protein_factor` REAL NULL,
     `fat_factor` REAL NULL,
