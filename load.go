@@ -72,7 +72,7 @@ func (r *quoteFixReader) Read(b []byte) (n int, err error) {
 
 func addFoodTerms(db *sql.DB) {
 	// creat Auxilary table
-	dbRun(db, "CREATE VIRTUAL TABLE food_terms USING fts4aux(food_fts)")
+	dbRun(db, "CREATE VIRTUAL TABLE food_terms USING fts5vocab(food_fts, row)")
 	defer dbRun(db, "DROP TABLE food_terms")
 
 	f, err := os.Create(foodTermsPath)

@@ -1,6 +1,9 @@
 package main
 
-import "database/sql"
+import (
+	"database/sql"
+	"errors"
+)
 
 type FoodItem struct {
 	quantity float64
@@ -46,7 +49,15 @@ func loadNutrients(db *sql.DB) {
 	}
 }
 
-func getNutrientData(db *sql.DB, item *FoodItem) {
-	//rows, err := db.Query("SELECT foods.description, units, description, precision FROM nutrients ORDER BY common_order")
-
+func findFood(db *sql.DB, foodTerms string) (int, error) {
+	rows, err := db.Query("SELECT id FROM food_fts WHERE food_fts MATCH ? ORDER BY bm25(food_fts) LIMIT 20", foodTerms)
+	checkErr(err)
+	if rows.Next() {
+		var id int
+		err = rows.Scan(&id)
+		checkErr(err)
+		return id, nil
+	} else {
+		return -1, errors.New("No food found for the terms: " + foodTerms)
+	}
 }
