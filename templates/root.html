@@ -2,26 +2,21 @@
 <html lang=en>
   <head>
     <meta charset=utf-8>
-    <title>blah</title>
+    <title>NoshGobble</title>
   </head>
   <body>
-    <form id="process" action="/process" method="POST">
-      <textarea name="ingredients" id="ingredients" prompt="Enter you ingredients here"></textarea>
-      <input type="submit"/>
-    </form>
+    <div id="left">
+      <form id="process" action="/process" method="POST">
+        <textarea name="ingredients" id="ingredients" prompt="Enter you ingredients here"></textarea>
+        <input type="submit"/>
+      </form>
+    </div>
+    <div id="label"></div>
   </body>
+  <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Archivo+Black" />
+  <link rel="stylesheet" type="text/css" href="/static/nutritionLabel-min.css">
+  <link rel="stylesheet" type="text/css" href="/static/style.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
-  <script>
-    $(document).ready(function() {
-      $("#process").submit(function(event) {
-        event.preventDefault();
-        $.getJSON("/process", {ingredients: $("#ingredients").val()}).done(function(data){
-          console.log(data);
-        }).error(function(err) {
-          console.log(err);
-        });
-        return false;
-      });
-    });
-  </script>
+  <script src="/static/nutritionLabel-min.js"></script>
+  <script src="/static/label.js"></script>
 </html>

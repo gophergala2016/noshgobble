@@ -1,0 +1,12 @@
+#left {
+  float: left;
+}
+#process textarea {
+  width: 480px;
+  height: 200px;
+  display: block;
+}
+#label {
+  position: absolute;
+  margin-left: 500px;
+}

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"encoding/json"
 	"flag"
 	"html/template"
@@ -19,23 +20,6 @@ func tp(name string) string {
 
 var templates = template.Must(template.ParseFiles(tp("root")))
 
-type Data struct {
-	Ingredients string
-}
-
-func processHandler(w http.ResponseWriter, r *http.Request) {
-	data := Data{Ingredients: r.FormValue("ingredients")}
-
-	js, err := json.Marshal(data)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(js)
-}
-
 func rootHandler(w http.ResponseWriter, r *http.Request) {
 	err := templates.ExecuteTemplate(w, "root.html", nil)
 	if err != nil {
@@ -50,9 +34,34 @@ func main() {
 	}
 
 	if *fServe {
-		http.HandleFunc("/process", processHandler)
+		db, err := sql.Open("sqlite3", dbPath+dbFilename)
+		checkErr(err)
+		defer func() {
+			err := db.Close()
+			checkErr(err)
+		}()
+		loadNutrients(db)
+
+		http.HandleFunc("/process", func(w http.ResponseWriter, r *http.Request) {
+			data, err := getIngredientData(db, r.FormValue("ingredients"))
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+
+			js, err := json.Marshal(data)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+
+			w.Header().Set("Content-Type", "application/json")
+			w.Write(js)
+		})
+
+		http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("./public"))))
 		http.HandleFunc("/", rootHandler)
-		http.ListenAndServe(":8080", nil)
 		log.Println("Listening on port :8080")
+		http.ListenAndServe(":8080", nil)
 	}
 }
