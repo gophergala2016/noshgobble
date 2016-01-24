@@ -7,12 +7,6 @@ import (
 	"strings"
 )
 
-type FoodItem struct {
-	quantity float64
-	unit     Unit
-	terms    string
-}
-
 // Parser represents a parser.
 type Parser struct {
 	s   *Scanner
