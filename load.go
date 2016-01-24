@@ -84,7 +84,9 @@ func loadFoods(db *sql.DB) {
 	checkErr(err)
 
 	// prepare the insert statement
-	stmt, err := db.Prepare("INSERT INTO foods(id, food_group_id, description, short_description, common_name, manufacturer_name, refuse_description, refuse, scientific_name, nitrogen_factor, protein_factor, fat_factor, carbohydrate_factor) values(?,?,?,?,?,?,?,?,?,?,?,?,?)")
+	insertFoods, err := db.Prepare("INSERT INTO foods(id, food_group_id, description, short_description, common_name, manufacturer_name, refuse_description, refuse, scientific_name, nitrogen_factor, protein_factor, fat_factor, carbohydrate_factor) values(?,?,?,?,?,?,?,?,?,?,?,?,?)")
+	checkErr(err)
+	insertFoodFTS, err := db.Prepare("INSERT INTO food_fts(id, description, short_description, common_name, scientific_name) values(?,?,?,?,?)")
 	checkErr(err)
 
 	f, err := os.Open("./data/FOOD_DES.txt")
@@ -99,7 +101,9 @@ func loadFoods(db *sql.DB) {
 		checkErr(err)
 
 		// insert
-		_, err = stmt.Exec(l[0], l[1], l[2], l[3], l[4], l[5], l[7], l[8], l[9], l[10], l[11], l[12], l[13])
+		_, err = insertFoods.Exec(l[0], l[1], l[2], l[3], l[4], l[5], l[7], l[8], l[9], l[10], l[11], l[12], l[13])
+		checkErr(err)
+		_, err = insertFoodFTS.Exec(l[0], l[2], l[3], l[4], l[9])
 		checkErr(err)
 	}
 }

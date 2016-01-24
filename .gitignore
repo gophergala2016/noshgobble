@@ -6,6 +6,6 @@ bower_components
 /dist
 build/reports
 data/*.pdf
-sqlite3.db
+db.db
 noshgobble
 backups

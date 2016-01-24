@@ -13,3 +13,13 @@ CREATE TABLE `foods` (
     `fat_factor` REAL NULL,
     `carbohydrate_factor` REAL NULL
 );
+
+CREATE VIRTUAL TABLE food_fts USING fts4(
+	id,
+	description,
+	short_description,
+	common_name,
+	scientific_name,
+	tokenize=porter,
+	notindexed=id
+);

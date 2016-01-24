@@ -1,8 +1,18 @@
 package main
 
+import "strings"
+
 var unit2Synonym = map[string][]string{
-	"gram":  {"g", "grams"},
-	"liter": {"l", "litre", "litres", "liters"},
+	"gram":       {"grams", "g"},
+	"liter":      {"liters", "l", "litre", "litres"},
+	"tablespoon": {"tablespoons", "T", "tb", "tbl", "tbsp"},
+	"teaspoon":   {"teaspoons", "t", "tsp", "tbl", "tbsp"},
+	"cup":        {"cups", "c"},
+	"kilogram":   {"kilograms", "kg"},
+	"pound":      {"pounds", "lb"},
+	"milliliter": {"milliliters", "ml"},
+	"ounce":      {"ounces", "oz"},
+	"pint":       {"pints", "pt"},
 }
 
 var synonym2Unit map[string]string
@@ -22,5 +32,10 @@ func BaseUnit(w string) string {
 		loadSynonym2Unit()
 	}
 
-	return synonym2Unit[w]
+	unit := synonym2Unit[w]
+	if unit == "" {
+		return synonym2Unit[strings.ToLower(w)]
+	} else {
+		return unit
+	}
 }

@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"bytes"
 	"io"
+	"log"
 	"strings"
 	"unicode"
 )
@@ -36,6 +37,34 @@ const (
 	// Other
 	WORD
 )
+
+func (t Token) String() string {
+	switch t {
+	case EOF:
+		return "EOF"
+	case WHITESPACE:
+		return "WHITESPACE"
+	case NUMBER:
+		return "NUMBER"
+	case ASTERISK:
+		return "ASTERISK"
+	case COMMA:
+		return "COMMA"
+	case PUNC:
+		return "PUNC"
+	case UNIT:
+		return "UNIT"
+	case FOOD:
+		return "FOOD"
+	case OF:
+		return "OF"
+	case WORD:
+		return "WORD"
+	default:
+		log.Fatalf("Error: you forgot to add the string for Type %d\n", t)
+	}
+	return ""
+}
 
 const eof = rune(0)
 
@@ -102,13 +131,41 @@ func (s *Scanner) scanIdent() (tok Token, lit string) {
 	}
 
 	// If the string matches a keyword then return that keyword.
-	ident := strings.ToLower(buf.String())
-	if unit := BaseUnit(ident); unit != "" {
+	ident := buf.String()
+	if unit := BaseUnit(buf.String()); unit != "" {
 		return UNIT, unit
 	}
 
+	switch strings.ToLower(ident) {
+	case "of":
+		return OF, buf.String()
+	default:
+		// Otherwise return as a regular identifier.
+		return WORD, buf.String()
+	}
+}
+
+// scanIdent consumes the current rune and all contiguous digit runes
+func (s *Scanner) scanNumber() (tok Token, lit string) {
+	// Create a buffer and read the current character into it.
+	var buf bytes.Buffer
+	buf.WriteRune(s.read())
+
+	// Read every subsequent ident character into the buffer.
+	// Non-ident characters and EOF will cause the loop to exit.
+	for {
+		if ch := s.read(); ch == eof {
+			break
+		} else if !unicode.IsDigit(ch) {
+			s.unread()
+			break
+		} else {
+			_, _ = buf.WriteRune(ch)
+		}
+	}
+
 	// Otherwise return as a regular identifier.
-	return WORD, buf.String()
+	return NUMBER, buf.String()
 }
 
 // Scan returns the next token and literal value.
@@ -120,6 +177,9 @@ func (s *Scanner) Scan() (tok Token, lit string) {
 	// If we see a letter then consume as an ident or reserved word.
 	if isWhitespace(ch) {
 		return s.scanWhitespace()
+	} else if unicode.IsDigit(ch) {
+		s.unread()
+		return s.scanNumber()
 	} else if unicode.IsLetter(ch) {
 		s.unread()
 		return s.scanIdent()
