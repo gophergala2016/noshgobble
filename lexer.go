@@ -26,8 +26,8 @@ const (
 	PUNC
 
 	// Units and Measures
-	UNIT    // g, grams, litres, etc.
-	MEASURE // half, third, quarter
+	UNIT     // g, grams, litres, etc.
+	FRACTION // half, third, quarter
 
 	// Food words
 	FOOD // Bread, chicken, salt
@@ -56,8 +56,8 @@ func (t Token) String() string {
 		return "PUNC"
 	case UNIT:
 		return "UNIT"
-	case MEASURE:
-		return "MEASURE"
+	case FRACTION:
+		return "FRACTION"
 	case FOOD:
 		return "FOOD"
 	case OF:
@@ -138,7 +138,7 @@ func (s *Scanner) scanIdent() (tok Token, lit string) {
 
 	// If the string matches a keyword then return that keyword.
 	ident := buf.String()
-	if unit := BaseUnit(buf.String()); unit != "" {
+	if unit := getUnitName(buf.String()); unit != "" {
 		return UNIT, unit
 	}
 
@@ -148,13 +148,13 @@ func (s *Scanner) scanIdent() (tok Token, lit string) {
 	case "of":
 		return OF, "of"
 	case "half":
-		return MEASURE, "half"
+		return FRACTION, "half"
 	case "third", "thirds":
-		return MEASURE, "third"
+		return FRACTION, "third"
 	case "quarter", "quarters":
-		return MEASURE, "quarter"
+		return FRACTION, "quarter"
 	case "eighth", "eighths":
-		return MEASURE, "eighth"
+		return FRACTION, "eighth"
 	case "one":
 		return NUMBER, "1"
 	case "two":
@@ -199,7 +199,7 @@ func (s *Scanner) scanNumber() (tok Token, lit string) {
 	for {
 		if ch := s.read(); ch == eof {
 			break
-		} else if !unicode.IsDigit(ch) {
+		} else if !unicode.IsDigit(ch) && ch != '.' {
 			s.unread()
 			break
 		} else {

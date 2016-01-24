@@ -36,7 +36,7 @@ func TestScan(t *testing.T) {
 		{"TWO THIRDS OF A CUP OF WATER", []token{
 			{NUMBER, "2"},
 			{WHITESPACE, " "},
-			{MEASURE, "third"},
+			{FRACTION, "third"},
 			{WHITESPACE, " "},
 			{OF, "of"},
 			{WHITESPACE, " "},

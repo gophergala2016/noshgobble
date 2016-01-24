@@ -70,17 +70,6 @@ func (r *quoteFixReader) Read(b []byte) (n int, err error) {
 	return i, nil
 }
 
-func checkErr(err error) {
-	if err != nil {
-		log.Fatal(err)
-	}
-}
-
-func dbRun(db *sql.DB, sql string) {
-	_, err := db.Exec(string(sql))
-	checkErr(err)
-}
-
 func processFoodTerms(db *sql.DB) {
 	// creat Auxilary table
 	dbRun(db, "CREATE VIRTUAL TABLE food_terms USING fts4aux(food_fts)")

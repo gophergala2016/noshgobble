@@ -16,6 +16,7 @@ const (
 	POUND
 	TABLESPOON
 	TEASPOON
+	COUNT
 )
 
 type UnitModel struct {
@@ -24,23 +25,28 @@ type UnitModel struct {
 	synonyms    []string
 }
 
-var unitMap = map[Unit]UnitModel{
-	GRAM:       {GRAM, "gram", []string{"grams", "g"}},
-	CUP:        {CUP, "cup", []string{"cups", "c"}},
-	KILOGRAM:   {KILOGRAM, "kilogram", []string{"kilograms", "kg"}},
-	LITER:      {LITER, "liter", []string{"liters", "l", "litre", "litres"}},
-	MILLILITER: {MILLILITER, "milliliter", []string{"milliliters", "ml"}},
-	OUNCE:      {OUNCE, "ounce", []string{"ounces", "oz"}},
-	PINT:       {PINT, "pint", []string{"pints", "pt"}},
-	POUND:      {POUND, "pound", []string{"pounds", "lb"}},
-	TABLESPOON: {TABLESPOON, "tablespoon", []string{"tablespoons", "T", "tb", "tbl", "tbsp"}},
-	TEASPOON:   {TEASPOON, "teaspoon", []string{"teaspoons", "t", "tsp", "tbl", "tbsp"}},
+var unitMap = map[Unit]*UnitModel{
+	GRAM:       &UnitModel{GRAM, "gram", []string{"grams", "g"}},
+	CUP:        &UnitModel{CUP, "cup", []string{"cups", "c"}},
+	KILOGRAM:   &UnitModel{KILOGRAM, "kilogram", []string{"kilograms", "kg"}},
+	LITER:      &UnitModel{LITER, "liter", []string{"liters", "l", "litre", "litres"}},
+	MILLILITER: &UnitModel{MILLILITER, "milliliter", []string{"milliliters", "ml"}},
+	OUNCE:      &UnitModel{OUNCE, "ounce", []string{"ounces", "oz"}},
+	PINT:       &UnitModel{PINT, "pint", []string{"pints", "pt"}},
+	POUND:      &UnitModel{POUND, "pound", []string{"pounds", "lb"}},
+	TABLESPOON: &UnitModel{TABLESPOON, "tablespoon", []string{"tablespoons", "T", "tb", "tbl", "tbsp"}},
+	TEASPOON:   &UnitModel{TEASPOON, "teaspoon", []string{"teaspoons", "t", "tsp", "tbl", "tbsp"}},
+	COUNT:      &UnitModel{COUNT, "<>", []string{}},
 }
 
-var synonym2Model map[string]UnitModel
+func (u Unit) String() string {
+	return unitMap[u].defaultName
+}
+
+var synonym2Model map[string]*UnitModel
 
 func loadSynonym2Model() {
-	synonym2Model = make(map[string]UnitModel)
+	synonym2Model = make(map[string]*UnitModel)
 
 	for _, model := range unitMap {
 		for _, synonym := range model.synonyms {
@@ -50,7 +56,7 @@ func loadSynonym2Model() {
 	}
 }
 
-func BaseUnit(w string) string {
+func getUnitModel(w string) *UnitModel {
 	if synonym2Model == nil {
 		loadSynonym2Model()
 	}
@@ -60,8 +66,17 @@ func BaseUnit(w string) string {
 		model, ok = synonym2Model[strings.ToLower(w)]
 	}
 	if !ok {
-		return ""
+		return nil
 	} else {
+		return model
+	}
+}
+
+func getUnitName(w string) string {
+	model := getUnitModel(w)
+	if model != nil {
 		return model.defaultName
+	} else {
+		return ""
 	}
 }

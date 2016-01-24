@@ -12,8 +12,8 @@ func TestBaseUnit(t *testing.T) {
 		{"g", "gram"},
 		{"litres", "liter"},
 	} {
-		if BaseUnit(x.arg) != x.expected {
-			t.Errorf("Test %d: expected `%s` but saw `%s`\n", i, x.expected, BaseUnit(x.arg))
+		if getUnitName(x.arg) != x.expected {
+			t.Errorf("Test %d: expected `%s` but saw `%s`\n", i, x.expected, getUnitName(x.arg))
 		}
 	}
 }
