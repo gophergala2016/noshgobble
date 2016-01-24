@@ -14,12 +14,11 @@ CREATE TABLE `foods` (
     `carbohydrate_factor` REAL NULL
 );
 
-CREATE VIRTUAL TABLE food_fts USING fts4(
-	id,
+CREATE VIRTUAL TABLE food_fts USING fts5(
+	id UNINDEXED,
 	description,
 	short_description,
 	common_name,
 	scientific_name,
-	tokenize=porter,
-	notindexed=id
+	tokenize='porter unicode61',
 );

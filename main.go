@@ -7,10 +7,10 @@ import (
 	"log"
 	"net/http"
 
-	_ "github.com/mattn/go-sqlite3"
+	_ "github.com/dbalmain/go-sqlite3"
 )
 
-var fLoad = flag.Bool("load", false, "Load the data from the original data files")
+var fReset = flag.Bool("reset", false, "Reset the data using the original data files")
 var fServe = flag.Bool("serve", false, "Serve the webpage")
 
 func tp(name string) string {
@@ -45,14 +45,14 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	flag.Parse()
-	if *fLoad {
-		loadData()
+	if *fReset {
+		reset()
 	}
 
 	if *fServe {
 		http.HandleFunc("/process", processHandler)
 		http.HandleFunc("/", rootHandler)
 		http.ListenAndServe(":8080", nil)
-		log.Println("Listening on port 8080")
+		log.Println("Listening on port :8080")
 	}
 }

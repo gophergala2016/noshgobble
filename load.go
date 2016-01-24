@@ -70,7 +70,7 @@ func (r *quoteFixReader) Read(b []byte) (n int, err error) {
 	return i, nil
 }
 
-func processFoodTerms(db *sql.DB) {
+func addFoodTerms(db *sql.DB) {
 	// creat Auxilary table
 	dbRun(db, "CREATE VIRTUAL TABLE food_terms USING fts4aux(food_fts)")
 	defer dbRun(db, "DROP TABLE food_terms")
@@ -95,7 +95,7 @@ func processFoodTerms(db *sql.DB) {
 	}
 }
 
-func loadFoods(db *sql.DB) {
+func addFoods(db *sql.DB) {
 	sql, err := ioutil.ReadFile("./sql/create-foods-table.sql")
 	checkErr(err)
 	dbRun(db, string(sql))
@@ -125,7 +125,7 @@ func loadFoods(db *sql.DB) {
 	}
 }
 
-func loadNutrients(db *sql.DB) {
+func addNutrients(db *sql.DB) {
 	sql, err := ioutil.ReadFile("./sql/create-nutrients-table.sql")
 	checkErr(err)
 	dbRun(db, string(sql))
@@ -151,7 +151,7 @@ func loadNutrients(db *sql.DB) {
 	}
 }
 
-func loadQuantities(db *sql.DB) {
+func addQuantities(db *sql.DB) {
 	sql, err := ioutil.ReadFile("./sql/create-quantities-table.sql")
 	checkErr(err)
 	dbRun(db, string(sql))
@@ -194,7 +194,7 @@ func backupDB() {
 	checkErr(err)
 }
 
-func loadData() {
+func reset() {
 	log.Print("Loading data into database!!")
 
 	// if the database exists, back it up
@@ -215,10 +215,10 @@ func loadData() {
 		defer dbRun(db, "END TRANSACTION")
 
 		// open database for writing
-		loadFoods(db)
-		loadNutrients(db)
-		loadQuantities(db)
+		addFoods(db)
+		addNutrients(db)
+		addQuantities(db)
 	}()
 
-	processFoodTerms(db)
+	addFoodTerms(db)
 }
