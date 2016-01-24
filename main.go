@@ -54,6 +54,7 @@ func main() {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
 				return
 			}
+			log.Printf("data is %v and js is %s", data, js)
 
 			w.Header().Set("Content-Type", "application/json")
 			w.Write(js)

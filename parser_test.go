@@ -13,6 +13,7 @@ func TestParse(t *testing.T) {
 		{"2t	of   sugar", FoodItem{2.0, TEASPOON, "sugar"}},
 		{"2.6 T of curry powder", FoodItem{2.6, TABLESPOON, "curry powder"}},
 		{"TWO THIRDS OF A CUP OF WATER", FoodItem{0.666, CUP, "water"}},
+		{"3 grams of cheese\n", FoodItem{3, GRAM, "cheese"}},
 	} {
 		parser := NewParser(strings.NewReader(x.input))
 		item, err := parser.Parse()

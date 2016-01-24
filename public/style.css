@@ -10,3 +10,6 @@
   position: absolute;
   margin-left: 500px;
 }
+#ingredient-list td {
+  padding-right: 10px;
+}

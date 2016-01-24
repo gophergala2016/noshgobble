@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"strconv"
 	"strings"
 )
 
@@ -87,25 +88,21 @@ func getFoodData(db *sql.DB, foodId int) map[int]float64 {
 	return qtys
 }
 
-type Ingredient struct {
-	qty  float64
-	unit string
-	name string
-}
-type IngredientData struct {
-	ingredients []Ingredient
-	data        map[int]float64
-}
-
-func getIngredientData(db *sql.DB, ingredients string) (data IngredientData, err error) {
-	data.ingredients = make([]Ingredient, 0)
-	data.data = make(map[int]float64)
-	for _, ingredient := range strings.Split(ingredients, "\n") {
+func getIngredientData(db *sql.DB, ingredientStr string) (map[string]interface{}, error) {
+	ingredients := make([][]interface{}, 0)
+	data := make(map[int]float64)
+	log.Printf("parsing `%s`", ingredientStr)
+	for _, ingredient := range strings.Split(ingredientStr, "\n") {
+		log.Printf("  > parsing `%s`", ingredient)
 		parser := NewParser(strings.NewReader(ingredient))
 		item, err := parser.Parse()
 		if err != nil {
-			return nil, err
+			if ingredient != "" {
+				log.Printf("Failed to parse `%s`", ingredient)
+			}
+			continue
 		}
+		unit := unitMap[item.unit]
 		log.Println(item.terms)
 		foodId, err := findFood(db, item.terms)
 		if err != nil {
@@ -116,10 +113,15 @@ func getIngredientData(db *sql.DB, ingredients string) (data IngredientData, err
 			return nil, err
 		}
 		for id, qty := range getFoodData(db, foodId) {
-			foodData[id] += qty
+			data[id] += qty
 		}
-		append
-		fmt.Println(len(foodData))
+
+		ingredients = append(ingredients, []interface{}{item.quantity, unit.abbr, foodName})
 	}
-	return
+	dataMap := make(map[string]float64)
+	for id, qty := range data {
+		dataMap[strconv.Itoa(id)] = qty
+	}
+
+	return map[string]interface{}{"ingredients": ingredients, "data": dataMap}, nil
 }
