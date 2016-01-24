@@ -2,40 +2,66 @@ package main
 
 import "strings"
 
-var unit2Synonym = map[string][]string{
-	"gram":       {"grams", "g"},
-	"liter":      {"liters", "l", "litre", "litres"},
-	"tablespoon": {"tablespoons", "T", "tb", "tbl", "tbsp"},
-	"teaspoon":   {"teaspoons", "t", "tsp", "tbl", "tbsp"},
-	"cup":        {"cups", "c"},
-	"kilogram":   {"kilograms", "kg"},
-	"pound":      {"pounds", "lb"},
-	"milliliter": {"milliliters", "ml"},
-	"ounce":      {"ounces", "oz"},
-	"pint":       {"pints", "pt"},
+type Unit int
+
+const (
+	// Special tokens
+	GRAM Unit = iota
+	CUP
+	KILOGRAM
+	LITER
+	MILLILITER
+	OUNCE
+	PINT
+	POUND
+	TABLESPOON
+	TEASPOON
+)
+
+type UnitModel struct {
+	id          Unit
+	defaultName string
+	synonyms    []string
 }
 
-var synonym2Unit map[string]string
+var unitMap = map[Unit]UnitModel{
+	GRAM:       {GRAM, "gram", []string{"grams", "g"}},
+	CUP:        {CUP, "cup", []string{"cups", "c"}},
+	KILOGRAM:   {KILOGRAM, "kilogram", []string{"kilograms", "kg"}},
+	LITER:      {LITER, "liter", []string{"liters", "l", "litre", "litres"}},
+	MILLILITER: {MILLILITER, "milliliter", []string{"milliliters", "ml"}},
+	OUNCE:      {OUNCE, "ounce", []string{"ounces", "oz"}},
+	PINT:       {PINT, "pint", []string{"pints", "pt"}},
+	POUND:      {POUND, "pound", []string{"pounds", "lb"}},
+	TABLESPOON: {TABLESPOON, "tablespoon", []string{"tablespoons", "T", "tb", "tbl", "tbsp"}},
+	TEASPOON:   {TEASPOON, "teaspoon", []string{"teaspoons", "t", "tsp", "tbl", "tbsp"}},
+}
 
-func loadSynonym2Unit() {
-	synonym2Unit = make(map[string]string)
+var synonym2Model map[string]UnitModel
 
-	for unit, synonyms := range unit2Synonym {
-		for _, synonym := range synonyms {
-			synonym2Unit[synonym] = unit
+func loadSynonym2Model() {
+	synonym2Model = make(map[string]UnitModel)
+
+	for _, model := range unitMap {
+		for _, synonym := range model.synonyms {
+			synonym2Model[synonym] = model
 		}
+		synonym2Model[model.defaultName] = model
 	}
 }
 
 func BaseUnit(w string) string {
-	if synonym2Unit == nil {
-		loadSynonym2Unit()
+	if synonym2Model == nil {
+		loadSynonym2Model()
 	}
 
-	unit := synonym2Unit[w]
-	if unit == "" {
-		return synonym2Unit[strings.ToLower(w)]
+	model, ok := synonym2Model[w]
+	if !ok {
+		model, ok = synonym2Model[strings.ToLower(w)]
+	}
+	if !ok {
+		return ""
 	} else {
-		return unit
+		return model.defaultName
 	}
 }

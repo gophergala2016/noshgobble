@@ -21,18 +21,20 @@ const (
 	NUMBER
 
 	// Punctuation
-	ASTERISK
+	SLASH
 	COMMA
 	PUNC
 
-	// Units
-	UNIT // g, grams, litres, etc.
+	// Units and Measures
+	UNIT    // g, grams, litres, etc.
+	MEASURE // half, third, quarter
 
 	// Food words
 	FOOD // Bread, chicken, salt
 
 	// KEYWORDS
 	OF // eg 1L of water
+	A  // eg half a cup of water
 
 	// Other
 	WORD
@@ -46,18 +48,22 @@ func (t Token) String() string {
 		return "WHITESPACE"
 	case NUMBER:
 		return "NUMBER"
-	case ASTERISK:
-		return "ASTERISK"
+	case SLASH:
+		return "SLASH"
 	case COMMA:
 		return "COMMA"
 	case PUNC:
 		return "PUNC"
 	case UNIT:
 		return "UNIT"
+	case MEASURE:
+		return "MEASURE"
 	case FOOD:
 		return "FOOD"
 	case OF:
 		return "OF"
+	case A:
+		return "A"
 	case WORD:
 		return "WORD"
 	default:
@@ -137,11 +143,48 @@ func (s *Scanner) scanIdent() (tok Token, lit string) {
 	}
 
 	switch strings.ToLower(ident) {
+	case "a":
+		return A, "a"
 	case "of":
-		return OF, buf.String()
+		return OF, "of"
+	case "half":
+		return MEASURE, "half"
+	case "third", "thirds":
+		return MEASURE, "third"
+	case "quarter", "quarters":
+		return MEASURE, "quarter"
+	case "eighth", "eighths":
+		return MEASURE, "eighth"
+	case "one":
+		return NUMBER, "1"
+	case "two":
+		return NUMBER, "2"
+	case "three":
+		return NUMBER, "3"
+	case "four":
+		return NUMBER, "4"
+	case "five":
+		return NUMBER, "5"
+	case "six":
+		return NUMBER, "6"
+	case "seven":
+		return NUMBER, "7"
+	case "eight":
+		return NUMBER, "8"
+	case "nine":
+		return NUMBER, "9"
+	case "ten":
+		return NUMBER, "10"
+	case "eleven":
+		return NUMBER, "11"
+	case "twelve":
+		return NUMBER, "12"
 	default:
+		if IsFoodTerm(ident) {
+			return FOOD, ident
+		}
 		// Otherwise return as a regular identifier.
-		return WORD, buf.String()
+		return WORD, ident
 	}
 }
 
@@ -189,8 +232,8 @@ func (s *Scanner) Scan() (tok Token, lit string) {
 	switch ch {
 	case eof:
 		return EOF, ""
-	case '*':
-		return ASTERISK, string(ch)
+	case '/':
+		return SLASH, string(ch)
 	case ',':
 		return COMMA, string(ch)
 	}

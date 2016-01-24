@@ -33,6 +33,21 @@ func TestScan(t *testing.T) {
 			{WHITESPACE, " "},
 			{FOOD, "powder"},
 		}},
+		{"TWO THIRDS OF A CUP OF WATER", []token{
+			{NUMBER, "2"},
+			{WHITESPACE, " "},
+			{MEASURE, "third"},
+			{WHITESPACE, " "},
+			{OF, "of"},
+			{WHITESPACE, " "},
+			{A, "a"},
+			{WHITESPACE, " "},
+			{UNIT, "cup"},
+			{WHITESPACE, " "},
+			{OF, "of"},
+			{WHITESPACE, " "},
+			{FOOD, "WATER"},
+		}},
 	} {
 		scanner := NewScanner(strings.NewReader(x.input))
 		for j, expected := range x.output {

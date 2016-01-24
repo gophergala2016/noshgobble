@@ -11,10 +11,6 @@ import (
 	"time"
 )
 
-const dbFilename = "food.db"
-const termsFilename = "foods.txt"
-const dbPath = "./databases/"
-
 type quoteFixReader struct {
 	r        *os.File
 	buffer   []byte
@@ -89,15 +85,16 @@ func processFoodTerms(db *sql.DB) {
 	// creat Auxilary table
 	dbRun(db, "CREATE VIRTUAL TABLE food_terms USING fts4aux(food_fts)")
 	defer dbRun(db, "DROP TABLE food_terms")
-	rows, err := db.Query("SELECT DISTINCT term FROM food_terms")
-	checkErr(err)
 
-	f, err := os.Create(dbPath + termsFilename)
+	f, err := os.Create(foodTermsPath)
 	checkErr(err)
 	defer f.Close()
 
 	w := bufio.NewWriter(f)
 	defer w.Flush()
+
+	rows, err := db.Query("SELECT DISTINCT term FROM food_terms")
+	checkErr(err)
 	for rows.Next() {
 		var term string
 		err = rows.Scan(&term)
@@ -137,7 +134,6 @@ func loadFoods(db *sql.DB) {
 		_, err = insertFoodFTS.Exec(l[0], l[2], l[3], l[4], l[9])
 		checkErr(err)
 	}
-	processFoodTerms(db)
 }
 
 func loadNutrients(db *sql.DB) {
@@ -224,11 +220,16 @@ func loadData() {
 		checkErr(err)
 	}()
 
-	dbRun(db, "BEGIN TRANSACTION")
-	defer dbRun(db, "END TRANSACTION")
+	// load all the data in a transaction for speed
+	func() {
+		dbRun(db, "BEGIN TRANSACTION")
+		defer dbRun(db, "END TRANSACTION")
 
-	// open database for writing
-	loadFoods(db)
-	loadNutrients(db)
-	loadQuantities(db)
+		// open database for writing
+		loadFoods(db)
+		loadNutrients(db)
+		loadQuantities(db)
+	}()
+
+	processFoodTerms(db)
 }
