@@ -123,7 +123,7 @@ func (p *Parser) scanTerms() string {
 			terms = append(terms, strings.ToLower(lit))
 		}
 	}
-	return strings.Join(terms, " ")
+	return strings.Join(terms, " OR ")
 }
 
 func (p *Parser) Parse() (item *FoodItem, err error) {
