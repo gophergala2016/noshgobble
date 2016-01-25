@@ -9,7 +9,7 @@ nutritional data. Think of it like Shazam for recipes, except, instead of
 retrieving the song name and artist info, you're getting the nutrition label for
 a recipe you like.
 
-![Screenshot](/public/images/screenshot.gif?raw=true "Screenshot")
+![Screenshot](/public/images/screencast.gif?raw=true "Screenshot")
 
 This project still has a long way to go. Finding the nutritional data that the
 user would expect is harder than I expected. I plan to add some machine learning
@@ -18,10 +18,6 @@ to get this right.
 Statistics
 --------------------------------------------------------------------------------
 ```
-      39 text files.
-      39 unique files.                              
-     412 files ignored.
-
 http://cloc.sourceforge.net v 1.60  T=0.91 s (24.3 files/s, 1513.8 lines/s)
 -------------------------------------------------------------------------------
 Language                     files          blank        comment           code
@@ -36,6 +32,8 @@ Bourne Shell                     1              2              1              7
 SUM:                            22            147             96           1129
 -------------------------------------------------------------------------------
 ```
+
+Not bad for 1 weekend's worth of coding in a new language.
 
 Installation
 --------------------------------------------------------------------------------
