@@ -11,6 +11,26 @@ $(document).ready(function() {
       iList.empty().append('<h3>Ingredients</h3>');
       for (var i in data.ingredients) {
         var ingredient = data.ingredients[i];
+        switch (ingredient[0]) {
+          case 0.333:
+            ingredient[0] = '&frac13;';
+            break;
+          case 0.666:
+            ingredient[0] = '&frac23;';
+            break;
+          case 0.125:
+            ingredient[0] = '&frac18;';
+            break;
+          case 0.25:
+            ingredient[0] = '&frac14;';
+            break;
+          case 0.5:
+            ingredient[0] = '&frac12;';
+            break;
+          case 0.75:
+            ingredient[0] = '&frac34;';
+            break;
+        }
         iList.append('<tr>' + ingredient.map(function(d) {return '<td>' + d + '</td>';}).join() + '</tr>')
       }
 

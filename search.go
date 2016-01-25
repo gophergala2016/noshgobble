@@ -113,7 +113,7 @@ func getIngredientData(db *sql.DB, ingredientStr string) (map[string]interface{}
 			return nil, err
 		}
 		for id, qty := range getFoodData(db, foodId) {
-			data[id] += qty
+			data[id] += qty * (item.quantity * unit.factor / 100)
 		}
 
 		ingredients = append(ingredients, []interface{}{item.quantity, unit.abbr, foodName})

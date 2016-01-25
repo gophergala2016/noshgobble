@@ -26,28 +26,29 @@ const (
 
 type UnitModel struct {
 	id       Unit
+	factor   float64
 	name     string
 	abbr     string
 	synonyms []string
 }
 
 var unitMap = map[Unit]*UnitModel{
-	GRAM:        &UnitModel{GRAM, "gram", "g", []string{"grams"}},
-	MILLIGRAM:   &UnitModel{MILLIGRAM, "milligram", "mg", []string{"milligrams"}},
-	MICROGRAM:   &UnitModel{MICROGRAM, "microgram", "µg", []string{"micrograms"}},
-	CUP:         &UnitModel{CUP, "cup", "cup", []string{"cups", "c"}},
-	KILOGRAM:    &UnitModel{KILOGRAM, "kilogram", "kg", []string{"kilograms"}},
-	LITER:       &UnitModel{LITER, "liter", "L", []string{"liters", "l", "litre", "litres"}},
-	MILLILITER:  &UnitModel{MILLILITER, "milliliter", "mL", []string{"milliliters", "ml"}},
-	OUNCE:       &UnitModel{OUNCE, "ounce", "oz", []string{"ounces"}},
-	PINT:        &UnitModel{PINT, "pint", "pt", []string{"pints"}},
-	POUND:       &UnitModel{POUND, "pound", "lb", []string{"pounds"}},
-	TABLESPOON:  &UnitModel{TABLESPOON, "tablespoon", "tbsp", []string{"tablespoons", "T", "tb", "tbl"}},
-	TEASPOON:    &UnitModel{TEASPOON, "teaspoon", "tsp", []string{"teaspoons", "t", "tsp"}},
-	IU:          &UnitModel{IU, "IU", "IU", []string{"iu", "internation-units"}},
-	KILOCALORIE: &UnitModel{KILOCALORIE, "kilocalorie", "kcal", []string{"kilocalories"}},
-	KILOJOULE:   &UnitModel{KILOJOULE, "kilojoule", "kJ", []string{"kilojoules"}},
-	COUNT:       &UnitModel{COUNT, "<>", "<>", []string{}},
+	GRAM:        &UnitModel{GRAM, 1.0, "gram", "g", []string{"grams"}},
+	KILOGRAM:    &UnitModel{KILOGRAM, 1000.0, "kilogram", "kg", []string{"kilograms"}},
+	MILLIGRAM:   &UnitModel{MILLIGRAM, 0.001, "milligram", "mg", []string{"milligrams"}},
+	MICROGRAM:   &UnitModel{MICROGRAM, 0.000001, "microgram", "µg", []string{"micrograms"}},
+	CUP:         &UnitModel{CUP, 250.0, "cup", "cup", []string{"cups", "c"}},
+	LITER:       &UnitModel{LITER, 1000.0, "liter", "L", []string{"liters", "l", "litre", "litres"}},
+	MILLILITER:  &UnitModel{MILLILITER, 1.0, "milliliter", "mL", []string{"milliliters", "ml"}},
+	OUNCE:       &UnitModel{OUNCE, 28.3495, "ounce", "oz", []string{"ounces"}},
+	PINT:        &UnitModel{PINT, 473.176, "pint", "pt", []string{"pints"}},
+	POUND:       &UnitModel{POUND, 453.592, "pound", "lb", []string{"pounds"}},
+	TABLESPOON:  &UnitModel{TABLESPOON, 15.0, "tablespoon", "tbsp", []string{"tablespoons", "T", "tb", "tbl"}},
+	TEASPOON:    &UnitModel{TEASPOON, 5.0, "teaspoon", "tsp", []string{"teaspoons", "t", "tsp"}},
+	IU:          &UnitModel{IU, 0.0, "IU", "IU", []string{"iu", "internation-units"}},
+	KILOCALORIE: &UnitModel{KILOCALORIE, 0.0, "kilocalorie", "kcal", []string{"kilocalories"}},
+	KILOJOULE:   &UnitModel{KILOJOULE, 0.0, "kilojoule", "kJ", []string{"kilojoules"}},
+	COUNT:       &UnitModel{COUNT, 0.0, "<>", "<>", []string{}},
 }
 
 func (u Unit) String() string {
