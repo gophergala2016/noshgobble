@@ -33,30 +33,31 @@ $(document).ready(function() {
         }
         iList.append('<tr>' + ingredient.map(function(d) {return '<td>' + d + '</td>';}).join() + '</tr>')
       }
+      var d = data.data;
 
       $('#label').nutritionLabel({
         width: '300',
-        showServingUnitQuantity : false,
-        ingredientList : data.ingredients.map(function(i) {return i[2]}).join(', '),
+        showServingUnitQuantity: false,
+        ingredientList: data.ingredients.map(function(i) {return i[2]}).join(', '),
 
-        showPolyFat : false,
-        showMonoFat : false,
+        showPolyFat: false,
+        showMonoFat: false,
 
-        valueCalories : 450,
-        valueFatCalories : 430,
-        valueTotalFat : 48,
-        valueSatFat : 6,
-        valueTransFat : 0,
-        valueCholesterol : 30,
-        valueSodium : 780,
-        valueTotalCarb : 3,
-        valueFibers : 0,
-        valueSugars : 3,
-        valueProteins : 3,
-        valueVitaminA : 0,
-        valueVitaminC : 0,
-        valueCalcium : 0,
-        valueIron : 0
+        valueCalories: d["208"],
+        valueFatCalories: d["204"] * 9,
+        valueTotalFat: d["204"],
+        valueSatFat: d["606"],
+        valueTransFat: d["605"],
+        valueCholesterol: d["601"],
+        valueSodium: d["307"],
+        valueTotalCarb: d["205"],
+        valueFibers: d["291"],
+        valueSugars: d["269"],
+        valueProteins: d["203"],
+        valueVitaminA: d["318"],
+        valueVitaminC: d["401"],
+        valueCalcium: d["301"],
+        valueIron: d["303"]
       });
       console.log(data);
     }).error(function(err) {
