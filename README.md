@@ -38,6 +38,9 @@ Not bad for 1 weekend's worth of coding in a new language.
 Installation
 --------------------------------------------------------------------------------
 
+I'm not sure but you may need to install the latest version of sqlite to get
+this working.
+
 ```
 $ go get github.com/dbalmain/go-sqlite3
 $ go get github.com/a2800276/porter
